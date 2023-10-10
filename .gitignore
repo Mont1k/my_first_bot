@@ -1,3 +1,5 @@
 venv
 .idea
 __pycache__/
+db_for_bot.sqlite3
+.env
