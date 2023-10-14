@@ -5,20 +5,14 @@ from config import bot
 from database.sql_commands import Database
 
 
-async def check_and_ban_users(chat_id, user_id):
-    conn = sqlite3.connect('your_database.db')
-    cursor = conn.cursor()
+async def check_and_ban_users(chat_id, user_id, message):
+    count = Database().sql_get_ban_count(telegram_id=user_id)
 
-    cursor.execute('SELECT COUNT FROM ban WHERE TELEGRAM_ID = ?', (user_id,))
-    count = cursor.fetchone()
-
-    if count and count[0] >= 3:
+    if count >= 3:
         try:
             await bot.kick_chat_member(chat_id, user_id)
         except Exception as e:
             print(f"Не удалось забанить пользователя: {e}")
-
-    conn.close()
 
 
 async def chat_action(message: types.Message):
@@ -33,13 +27,14 @@ async def chat_action(message: types.Message):
             )
             print(user)
             if user:
-                # Database().sql_update_ban_user_query(
-                #     telegram_id=message.from_user.id
-                # )
                 Database().sql_update_ban_query(
                     telegram_id=message.from_user.id
                 )
-                print(user)
+                print('Updated')
+
+                count = Database().sql_get_ban_count(telegram_id=message.from_user.id)
+                if count >= 3:
+                    await check_and_ban_users(message.chat.id, message.from_user.id, message)
             else:
                 Database().sql_insert_ban_query(
                     telegram_id=message.from_user.id

@@ -12,7 +12,6 @@ class Database:
             print("Connected")
 
         self.connection.execute(sql_queries.CREATE_USER_TABLE_QUERY)
-        # self.connection.execute(sql_queries.CREATE_BAN_USER_TABLE_QUERY)
         self.connection.execute(sql_queries.CREATE_BAN_TABLE_QUERY)
         self.connection.commit()
 
@@ -35,26 +34,12 @@ class Database:
             sql_queries.SELECT_ALL_USERS_QUERY,
         ).fetchall()
 
-    # def sql_insert_ban_user_query(self, telegram_id, username):
-    #     self.cursor.execute(
-    #         sql_queries.INSERT_BAN_USER_QUERY,
-    #         (None, telegram_id, username, 1)
-    #     )
-    #     self.connection.commit()
-
     def sql_insert_ban_query(self, telegram_id):
         self.cursor.execute(
             sql_queries.INSERT_BAN_QUERY,
             (None, telegram_id, 1)
         )
         self.connection.commit()
-
-    # def sql_update_ban_user_query(self, telegram_id):
-    #     self.cursor.execute(
-    #         sql_queries.UPDATE_BAN_USER_COUNT_QUERY,
-    #         (telegram_id,)
-    #     )
-    #     self.connection.commit()
 
     def sql_update_ban_query(self, telegram_id):
         self.cursor.execute(
@@ -76,3 +61,10 @@ class Database:
             (telegram_id,)
         ).fetchall()
 
+    def sql_get_ban_count(self, telegram_id):
+        self.cursor.execute(sql_queries.SELECT_COUNT_QUERY, (telegram_id,))
+        count = self.cursor.fetchone()
+        if count:
+            return count[0]
+        else:
+            return 0
