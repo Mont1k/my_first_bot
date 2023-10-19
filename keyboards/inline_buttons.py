@@ -7,7 +7,18 @@ async def start_keyboard():
         "Click me!",
         callback_data="start_questionnaire"
     )
+    registration_button = InlineKeyboardButton(
+        "Registration",
+        callback_data='fsm_start'
+    )
+    my_profile_button = InlineKeyboardButton(
+        "My Profile",
+        callback_data="my_profile"
+    )
+
     markup.add(questionnaire_button)
+    markup.add(registration_button)
+    markup.add(my_profile_button)
     return markup
 
 
@@ -15,14 +26,14 @@ async def questionnaire_one_keyboard():
     markup = InlineKeyboardMarkup()
     yes_button = InlineKeyboardButton(
         "Yes",
-        callback_data="yes1"
+        callback_data="hungry_yes"
     )
-    yes2_button = InlineKeyboardButton(
+    no_button = InlineKeyboardButton(
         "Yes, of course",
-        callback_data="yes2"
+        callback_data="hungry_no"
     )
     markup.add(yes_button)
-    markup.add(yes2_button)
+    markup.add(no_button)
     return markup
 
 
