@@ -15,13 +15,18 @@ class Database:
         self.connection.execute(sql_queries.CREATE_BAN_TABLE_QUERY)
         self.connection.execute(sql_queries.CREATE_USER_FORM_TABLE_QUERY)
         self.connection.execute(sql_queries.CREATE_LIKE_TABLE_QUERY)
+        self.connection.execute(sql_queries.CREATE_REFERENCE_TABLE_QUERY)
+        try:
+            self.connection.execute(sql_queries.ALTER_USER_TABLE)
+        except sqlite3.OperationalError:
+            pass
 
         self.connection.commit()
 
     def sql_insert_user_query(self, telegram_id, username, first_name, last_name):
         self.cursor.execute(
             sql_queries.INSERT_USER_QUERY,
-            (None, telegram_id, username, first_name, last_name,)
+            (None, telegram_id, username, first_name, last_name,None)
         )
         self.connection.commit()
 
@@ -55,6 +60,7 @@ class Database:
             "username": row[2],
             "first_name": row[3],
             "last_name": row[4],
+            "link":row[5],
         }
         return self.cursor.execute(
             sql_queries.SELECT_ALL_USERS_QUERY,
@@ -129,3 +135,42 @@ class Database:
             (nickname, bio, age, occupation, photo, telegram_id,)
         )
         self.connection.commit()
+
+    def sql_update_user_reference_link_query(self, link, telegram_id):
+        self.cursor.execute(
+            sql_queries.UPDATE_USER_REFERENCE_LINK_QUERY,
+            (link, telegram_id,)
+        )
+        self.connection.commit()
+
+    def sql_insert_referral_query(self, owner, referral):
+        self.cursor.execute(
+            sql_queries.INSERT_REFERRAL_QUERY,
+            (None, owner, referral,)
+        )
+        self.connection.commit()
+
+    def sql_select_user_by_link_query(self, link):
+        self.cursor.row_factory = lambda cursor, row: {
+            'id': row[0],
+            "telegram_id": row[1],
+            "username": row[2],
+            "first_name": row[3],
+            "last_name": row[4],
+            "link": row[5]
+        }
+        return self.cursor.execute(
+            sql_queries.SELECT_USER_BY_LINK_QUERY,
+            (link,)
+        ).fetchall()
+
+    def sql_select_all_referral_by_owner_query(self, owner):
+        self.cursor.row_factory = lambda cursor, row: {
+            'id': row[0],
+            "owner": row[1],
+            "referral": row[2]
+        }
+        return self.cursor.execute(
+            sql_queries.SELECT_ALL_REFERRAL_BY_OWNER_QUERY,
+            (owner,)
+        ).fetchall()

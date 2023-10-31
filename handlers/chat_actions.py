@@ -19,6 +19,7 @@ async def chat_action(message: types.Message):
     ban_words = ['fuck', 'bitch', 'damn']
 
     trigger_words = ['пошел нахуй', 'иди в жопу', 'заткнись', 'иди нахуй']
+    prosto_slova = ['салам алейкум', 'ассалам алейкум']
 
     for word in ban_words:
         if word in message.text.lower().replace(" ", ""):
@@ -54,6 +55,10 @@ async def chat_action(message: types.Message):
     for word in trigger_words:
         if word in message.text.lower():
             await message.reply("Сам пошел!")
+
+    for word in prosto_slova:
+        if word in message.text.lower():
+            await message.reply("Алейкум ассалам")
 
     if message.text.startswith('/'):
         await message.reply("There is no such a command. Maybe u mispronounced")
