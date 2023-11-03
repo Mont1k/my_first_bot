@@ -40,7 +40,7 @@ async def start_button(message: types.Message):
         first_name=message.from_user.first_name,
         last_name=message.from_user.last_name,
     )
-    with open("/Users/erkeb/PycharmProjects/geek_34_1_bot/media/my_meme.gif", 'rb') as animation:
+    with open("/Users/user/PycharmProjects/geek_34_1_bot/media/my_meme.gif", 'rb') as animation:
         await bot.send_animation(
             chat_id=message.chat.id,
             animation=animation,
