@@ -1,5 +1,5 @@
 import sqlite3
-
+from config import DESTINATION
 from aiogram import types, Dispatcher
 from config import bot
 from aiogram.utils.deep_linking import _create_link
@@ -40,7 +40,7 @@ async def start_button(message: types.Message):
         first_name=message.from_user.first_name,
         last_name=message.from_user.last_name,
     )
-    with open("/Users/user/PycharmProjects/geek_34_1_bot/media/my_meme.gif", 'rb') as animation:
+    with open(DESTINATION+"/media/my_meme.gif", 'rb') as animation:
         await bot.send_animation(
             chat_id=message.chat.id,
             animation=animation,
