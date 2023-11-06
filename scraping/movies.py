@@ -12,6 +12,7 @@ class movies:
     URL = "https://rezka.ag/animation/"
     MOVIE_LINK_XPATH = '//div[@class="b-content__inline_item"]/@data-url'
     PLUS_URL = "https://rezka.ag/animation/"
+
     def parse_data(self):
         html = requests.get(url=self.URL, headers=self.headers).text
         tree = Selector(text=html)
@@ -20,6 +21,7 @@ class movies:
             self.PLUS_URL + link
 
         return links[:5]
+
 
 if __name__ == '__main__':
     scraper = movies()

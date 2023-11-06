@@ -28,13 +28,17 @@ async def start_keyboard():
         "5 Anime",
         callback_data="anime_films"
     )
-
+    async_scrapper_button = InlineKeyboardButton(
+        "Async Scrapper",
+        callback_data="async_scrap"
+    )
     markup.add(questionnaire_button)
     markup.add(registration_button)
     markup.add(my_profile_button)
     markup.add(random_profile_button)
     markup.add(reference_menu_button)
     markup.add(anime_films_button)
+    markup.add(async_scrapper_button)
     return markup
 
 

@@ -2,6 +2,8 @@ from aiogram import types, Dispatcher
 from config import bot
 from keyboards.inline_buttons import questionnaire_one_keyboard
 from scraping.movies import movies
+from scraping.async_scraper import AsyncScraper
+import asyncio
 
 
 async def start_questionnaire(call: types.CallbackQuery):
@@ -46,6 +48,19 @@ async def anime_films(call: types.CallbackQuery):
         )
 
 
+async def async_scrap(call: types.CallbackQuery):
+    print(call.data)
+    scraper = AsyncScraper()
+    links = await scraper.parse_pages()
+    print(links)
+
+    for link in links:
+        await bot.send_message(
+            chat_id=call.message.chat.id,
+            text=scraper.PLUS_E + link,
+        )
+
+
 def register_callback_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(start_questionnaire,
                                        lambda call: call.data == "start_questionnaire")
@@ -55,3 +70,5 @@ def register_callback_handlers(dp: Dispatcher):
                                        lambda call: call.data == "hungry_no")
     dp.register_callback_query_handler(anime_films,
                                        lambda call: call.data == "anime_films")
+    dp.register_callback_query_handler(async_scrap,
+                                       lambda call: call.data == "async_scrap")
