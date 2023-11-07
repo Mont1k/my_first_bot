@@ -1,5 +1,7 @@
 from aiogram import types, Dispatcher
 from config import bot
+from database.sql_commands import Database
+from handlers.reference_menu import check_balance
 from keyboards.inline_buttons import questionnaire_one_keyboard
 from scraping.movies import movies
 from scraping.async_scraper import AsyncScraper
@@ -59,6 +61,14 @@ async def async_scrap(call: types.CallbackQuery):
             chat_id=call.message.chat.id,
             text=scraper.PLUS_E + link,
         )
+
+
+async def check_balance_call(call: types.CallbackQuery):
+    balance = await check_balance(call.from_user.id, Database())
+    await bot.send_message(
+        chat_id=call.from_user.id,
+        text=f"Ваш баланс: {balance} баллов"
+    )
 
 
 def register_callback_handlers(dp: Dispatcher):

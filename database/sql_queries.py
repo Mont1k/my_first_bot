@@ -58,6 +58,18 @@ CREATE_REFERENCE_TABLE_QUERY = """
         )
 """
 
+CREATE_WALLET_TABLE_QUERY = """
+    CREATE TABLE IF NOT EXISTS Wallet (
+        telegram_id INTEGER PRIMARY KEY,
+        balance INTEGER
+    )
+"""
+ADD_REFERRAL_POINTS_QUERY = """
+INSERT INTO Wallet (telegram_id, balance)
+    VALUES (?, ?)
+    ON CONFLICT(telegram_id) DO UPDATE
+    SET balance = Wallet.balance + excluded.balance;
+"""
 INSERT_LIKE_QUERY = """
 INSERT INTO like_user VALUES (?,?,?)
 """
@@ -88,6 +100,9 @@ SELECT * FROM telegram_users WHERE TELEGRAM_ID = ?
 SELECT_USER_FORM_QUERY = """
 SELECT * FROM user_form WHERE TELEGRAM_ID = ?
 """
+SELECT_BALANCE_QUERY = """
+    SELECT balance FROM Wallet WHERE telegram_id = ?;
+"""
 
 INSERT_BAN_QUERY = """
 INSERT OR IGNORE INTO ban VALUES (?,?,?)
@@ -98,6 +113,9 @@ UPDATE ban SET COUNT = COUNT + 1 WHERE TELEGRAM_ID = ?
 
 UPDATE_USER_REFERENCE_LINK_QUERY = """
 UPDATE telegram_users SET REFERENCE_LINK = ? WHERE TELEGRAM_ID = ?
+"""
+UPDATE_BALANCE_QUERY = """
+    UPDATE Wallet SET balance = ? WHERE telegram_id = ?;
 """
 
 SELECT_COUNT_QUERY = """SELECT COUNT FROM ban WHERE TELEGRAM_ID = ?"""

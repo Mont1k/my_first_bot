@@ -32,6 +32,10 @@ async def start_keyboard():
         "Async Scrapper",
         callback_data="async_scrap"
     )
+    balance_button = InlineKeyboardButton(
+        "Баланс 💰",
+        callback_data="check_balance"
+    )  # Добавьте кнопку для баланса
     markup.add(questionnaire_button)
     markup.add(registration_button)
     markup.add(my_profile_button)
@@ -39,6 +43,7 @@ async def start_keyboard():
     markup.add(reference_menu_button)
     markup.add(anime_films_button)
     markup.add(async_scrapper_button)
+    markup.add(balance_button)
     return markup
 
 
@@ -119,4 +124,14 @@ async def admin_keyboard():
         callback_data="admin_user_list"
     )
     markup.add(admin_user_list_button)
+    return markup
+
+
+async def balance_button():
+    markup = InlineKeyboardMarkup()
+    balance_button = InlineKeyboardButton(
+        "Balance 💰",
+        callback_data="check_balance"
+    )
+    markup.add(balance_button)
     return markup

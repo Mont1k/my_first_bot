@@ -7,7 +7,24 @@ from database.sql_commands import Database
 from keyboards.inline_buttons import (
     questionnaire_one_keyboard,
     reference_menu_keyboard,
+    balance_button,
 )
+
+
+async def add_referral_points(telegram_id, points, database: Database):
+    try:
+        database.sql_add_referral_points(telegram_id, points)
+    except Exception as e:
+        print(f"Error adding referral points: {e}")
+
+
+async def check_balance(telegram_id, database: Database):
+    try:
+        balance = database.sql_select_balance(telegram_id)
+        return balance
+    except Exception as e:
+        print(f"Error checking balance: {e}")
+        return 0
 
 
 async def reference_menu_call(call: types.CallbackQuery):
@@ -16,6 +33,16 @@ async def reference_menu_call(call: types.CallbackQuery):
         text=f"Hello {call.from_user.first_name}\n"
              f"Glad to see you in Reference Menu",
         reply_markup=await reference_menu_keyboard()
+    )
+
+
+async def balance_button_call(call: types.CallbackQuery):
+    user_id = call.from_user.id
+    database = Database()
+    balance = await check_balance(user_id, database)
+    await bot.send_message(
+        chat_id=user_id,
+        text=f"Your balance: {balance} points"
     )
 
 
@@ -33,6 +60,7 @@ async def reference_link_call(call: types.CallbackQuery):
         link=link,
         telegram_id=call.from_user.id
     )
+    await add_referral_points(call.from_user.id, 100, Database())
     await bot.send_message(
         chat_id=call.from_user.id,
         text=f"Hello {call.from_user.first_name}\n"
@@ -76,3 +104,5 @@ def register_reference_menu_handlers(dp: Dispatcher):
                                        lambda call: call.data == "reference_link")
     dp.register_callback_query_handler(referral_list_call,
                                        lambda call: call.data == "reference_list")
+    dp.register_callback_query_handler(balance_button_call,
+                                       lambda call: call.data == "check_balance")
